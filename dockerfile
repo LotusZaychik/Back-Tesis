@@ -1,5 +1,22 @@
+
 # Usa una imagen base con PHP 8 y Nginx
 FROM richarvey/nginx-php-fpm:latest
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    locales \
+    zip \
+    jpegoptim optipng pngquant gifsicle \
+    vim \
+    unzip \
+    git \
+    curl \
+    libonig-dev \
+    libzip-dev \
+    libxml2-dev \
+    libpq-dev
 # Copiar los archivos de tu aplicación al contenedor
 COPY . /var/www/html
 # Establecer los permisos correctos para los archivos
