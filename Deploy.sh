@@ -2,14 +2,17 @@
 # Asegúrate de que se detengan en caso de error
 set -e
 # Instalar dependencias de Composer
-echo "Instalando dependencias de Composer..."
 composer install --no-dev --optimize-autoloader
+# Generar clave de aplicación
+php artisan key:generate
 # Ejecutar migraciones
 echo "Ejecutando migraciones..."
 php artisan migrate --force
-# Cachear rutas
-echo "Cacheando rutas..."
+# Optimizacion
 php artisan route:cache
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
 # Listar rutas para verificar que todo está en orden
 echo "Listando rutas..."
 php artisan route:list
