@@ -1,50 +1,50 @@
 
 #!/bin/bash
 
-# filepath: deploy.sh
-
-# Exit immediately if a command exits with a non-zero status
+# Asegúrate de que se detengan en caso de error
 set -e
 
-# Update package lists
-sudo apt-get update
+# Instalar Faker si no está instalado (opcional, si usas Faker en tu proyecto)
+echo "Instalando Faker..."
+composer require fakerphp/faker --dev
 
-# Install necessary packages
-sudo apt-get install -y nginx php-fpm php-mysql php-xml php-mbstring php-zip unzip curl
-
-# Install Composer
-curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
-
-# Navigate to the project directory
-cd /path/to/your/laravel/project
-
-# Install PHP dependencies
+# Instalar dependencias de Composer
+echo "Instalando dependencias de Composer..."
 composer install --no-dev --optimize-autoloader
 
-# Set permissions for Laravel
-sudo chown -R www-data:www-data storage bootstrap/cache
-sudo chmod -R 775 storage bootstrap/cache
-
-# Generate application key
-php artisan key:generate
-
-# Run database migrations
+# Ejecutar migraciones
+echo "Ejecutando migraciones..."
 php artisan migrate --force
 
-# Clear and cache configurations
+# Ejecutar seeding si es necesario
+echo "Ejecutando seeders..."
+php artisan db:seed --class=RolesAndPermissionsSeeder
+
+# Cachear configuraciones
+echo "Cacheando configuraciones..."
 php artisan config:cache
+
+# Cachear rutas
+echo "Cacheando rutas..."
 php artisan route:cache
+
+# Cachear vistas
+echo "Cacheando vistas..."
 php artisan view:cache
 
-# Copy Nginx configuration
-sudo cp /path/to/your/nginx.conf /etc/nginx/sites-available/default
+# Listar rutas para verificar que todo está en orden
+echo "Listando rutas..."
+php artisan route:list
 
-# Restart Nginx to apply the new configuration
-sudo systemctl restart nginx
+# Asegurar que los permisos son correctos
+echo "Configurando permisos..."
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Ensure the sad.svg file is in the correct location
-mkdir -p /var/www/html/api
-cp /path/to/your/local/sad.svg /var/www/html/api/sad.svg
+# Ejecutar el servidor PHP-FPM (en un contenedor con Nginx o Apache, esto será manejado por el servicio web)
+# No es necesario ejecutar 'php artisan serve' si estás utilizando Nginx o Apache, pero si lo necesitas, puedes descomentar la siguiente línea:
+# php artisan serve --host=0.0.0.0 --port=10000
 
-echo "Deployment completed successfully."
+# Iniciar el servidor PHP-FPM y Nginx si no está en ejecución
+php-fpm & 
+nginx -g "daemon off;"
+
