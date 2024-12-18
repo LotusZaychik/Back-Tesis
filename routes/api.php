@@ -14,7 +14,13 @@ use Illuminate\Support\Facades\Route;
 // rutas para el registro y login de acceso publico
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-
+// rutas para el crud de usuarios
+Route::post('/usuarios', [UsuarioController::class, 'store']);
+Route::get('/usuarios', [UsuarioController::class, 'index']);
+Route::put('/usuarios/{id}', [UsuarioController::class, 'update']);
+Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']);
+Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
+  
 
 // aplicacion de middleware para proteger las rutas, el middleware se encarga de verificar si el token es valido, en caso de no serlo, se retorna un error 401, el middleware se encuentra den App\Http\Middleware\JwtMiddleware.php
 // no se agrega a bootstrap/app.php porque se agrega en el archivo de rutas
@@ -30,13 +36,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
   Route::put('/roles/{id}', [RolesController::class, 'update']);
   Route::delete('/roles/{id}', [RolesController::class, 'destroy']);
 
-  // rutas para el crud de usuarios
-  Route::post('/usuarios', [UsuarioController::class, 'store']);
-  Route::get('/usuarios', [UsuarioController::class, 'index']);
-  Route::put('/usuarios/{id}', [UsuarioController::class, 'update']);
-  Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']);
-  Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
-  
+
   // rutas para el crud de tesis, como el usuario de rol estudiante puede crear tesis, no se aplica un middleware para que pueda modificar tesis
   Route::get('/tesis', [TesisController::class, 'index']);
   Route::put('/tesis/actualizarEstado/{id}', [TesisController::class, 'actualizarEstadoTesis']);
