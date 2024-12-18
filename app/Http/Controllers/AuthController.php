@@ -13,15 +13,6 @@ class AuthController extends Controller
     // Registro de usuario
     public function register(Request $request)
     {
-        // Validar datos
-        $request->validate([
-            'nombres_usuario' => 'required|string',
-            'email' => 'required|string|email|unique:usuarios',
-            'password' => 'required|string',
-            'id_rol' => 'required|integer',
-            'telefono_usuario' => 'required|string',
-            'direccion_usuario' => 'required|string'
-        ]);
         // Crear usuario
         $usuario = Usuario::create([
             'nombres_usuario' => $request->nombres_usuario,
