@@ -1,12 +1,16 @@
 #!/bin/bash
 # Asegúrate de que se detengan en caso de error
 set -e
+# Instalar Faker si no está instalado
+echo "Instalando Faker..."
+composer require fakerphp/faker --dev
 # Instalar dependencias de Composer
 composer install --no-dev --optimize-autoloader
-# Generar clave de aplicación
-php artisan key:generate
 # Ejecutar migraciones
 php artisan migrate --force
+# Cachear configuraciones
+echo "Cacheando configuraciones..."
+php artisan config:cache
 # Optimizacion
 php artisan route:cache
 php artisan config:cache
