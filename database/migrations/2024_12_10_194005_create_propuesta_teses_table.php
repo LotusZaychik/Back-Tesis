@@ -17,15 +17,10 @@ return new class extends Migration
             $table->id('id_propuesta_tesis');
             $table->string('titulo');
             $table->string('descripcion');
-            $table->string('ambito');
+            // $table->string('ambito');
             $table->timestamps();
         });
 
-        FacadesDB::statement("
-            ALTER TABLE propuesta_tesis
-            ADD CONSTRAINT ambito_check
-            CHECK (ambito IN ('investigacion', 'desarrollo web', 'desarrollo movil', 'desarrollo videojuegos', 'inteligencia artificial'))
-        ");
     }
 
     /**
@@ -33,11 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        FacadesDB::statement("
-            ALTER TABLE propuesta_tesis
-            DROP CONSTRAINT IF EXISTS tipo_check
-        ");
-
         Schema::dropIfExists('propuesta_teses');
     }
 };
