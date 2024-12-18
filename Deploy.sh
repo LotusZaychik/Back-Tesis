@@ -10,9 +10,6 @@ composer install --no-dev --optimize-autoloader
 # Ejecutar migraciones
 echo "Ejecutando migraciones..."
 php artisan migrate --force
-# Cachear configuraciones
-echo "Cacheando configuraciones..."
-php artisan config:cache
 # Cachear rutas
 echo "Cacheando rutas..."
 php artisan route:cache
