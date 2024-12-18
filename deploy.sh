@@ -15,9 +15,7 @@ composer install --no-dev --optimize-autoloader
 echo "Ejecutando migraciones..."
 php artisan migrate --force
 
-# Ejecutar seeding si es necesario
-echo "Ejecutando seeders..."
-php artisan db:seed --class=RolesAndPermissionsSeeder
+
 
 # Cachear configuraciones
 echo "Cacheando configuraciones..."
@@ -31,9 +29,6 @@ php artisan route:cache
 echo "Cacheando vistas..."
 php artisan view:cache
 
-# Listar rutas para verificar que todo está en orden
-echo "Listando rutas..."
-php artisan route:list
 
 # Asegurar que los permisos son correctos
 echo "Configurando permisos..."
