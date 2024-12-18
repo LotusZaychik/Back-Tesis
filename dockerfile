@@ -1,20 +1,41 @@
 
-# Usa una imagen base con PHP 8 y Nginx
-FROM richarvey/nginx-php-fpm:latest
-# Copiar los archivos de tu aplicación al contenedor
-COPY . /var/www/html
-# Establecer los permisos correctos para los archivos
-RUN chown -R www-data:www-data /var/www/html
-# Instalar dependencias de PHP con Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --installdir=/usr/local/bin --filename=composer
-# Instalar las dependencias de Laravel
-RUN composer install --no-dev --optimize-autoloader
-# Ejecutar los comandos de caché en producción
-RUN php artisan config:cache
-RUN php artisan route:cache
-# Exponer el puerto 80
-EXPOSE 80
-# Copiar y dar permisos al script deploy.sh
-COPY deploy.sh /deploy.sh
-RUN chmod +x /deploy.sh
-# Comando por defecto para ejecutar el sc
+# Usa una imagen base de PHP con soporte para FPM
+FROM php:8.1-fpm
+
+# Instala dependencias del sistema
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    libonig-dev \
+    libxml2-dev \
+    && docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Instala Composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+
+# Establece el directorio de trabajo
+WORKDIR /var/www
+
+# Copia los archivos de la aplicación
+COPY . .
+
+# Instala las dependencias de Laravel
+RUN composer install --optimize-autoloader --no-dev
+
+# Establece permisos adecuados
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 775 storage bootstrap/cache
+
+# Expone el puerto para PHP-FPM
+EXPOSE 9000
+
+# Comando para iniciar PHP-FPM
+CMD ["php-fpm"]
